@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Gia Phả Họ Nguyễn</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .link {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 2px;
+    }
+    .info-text {
+      font: 12px sans-serif;
+      fill: black;
+    }
+    /* CSS cho modal */
+    #imageModal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    #modalContent {
+      display: flex;
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: #333;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    #modalImage {
+      width: 300px;
+      height: 400px;
+      border-radius: 10px;
+      object-fit: cover; /* Hoặc 'contain' nếu bạn muốn */
+    }
+
+    #modalInfo {
+      color: #fff;
+      margin-left: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    #modalInfo h2 {
+      margin-bottom: 10px;
+    }
+
+    #modalInfo p {
+      margin: 5px 0;
+    }
+
+    #closeModal {
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #closeModal:hover {
+      color: #bbb;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>Gia Phả Họ Nguyễn</h1>
+    <svg width="960" height="600" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+  <svg width="960" height="600" xmlns="http://www.w3.org/2000/svg"></svg>
+
+  <!-- Modal để hiển thị hình ảnh phóng to và thông tin -->
+  <div id="imageModal">
+    <span id="closeModal">&times;</span>
+    <div id="modalContent">
+      <img id="modalImage">
+      <div id="modalInfo">
+        <h2 id="modalName"></h2>
+        <p id="modalDescription"></p>
+        <p><strong>Số điện thoại:</strong> <span id="modalPhone"></span></p>
+        <p><strong>Địa chỉ:</strong> <span id="modalAddress"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // Dữ liệu cây gia phả (cập nhật nếu cần)
+    const treeData = {
+      "name": "Chồng Nguyễn Văn Hoành",
+      "dob": "01-01-1945",
+      "spouse": "Vợ Trần Thị Nhiệm",
+      "image": "images/tranthinhiem.jpg",
+      "phone": "0123456789",
+      "address": "Thanh Hoá, Việt Nam",
+      "description": "Ông là người sáng lập gia đình.",
+      "children": [
+      {
+          "name": "Con trai Nguyễn Ngọc Hân",
+          "spouse": "Con dâu Vũ Thị Ân",
+          "image": "images/nguyenngochan/nguyenngochan.jpg",
+          "children": [
+            {
+              "name": "Cháu gái Nguyễn Thị Oanh",
+              "spouse": "Cháu rể Lê Trung",
+              "image": "images/nguyenngochan/nguyenthioanh.jpg",
+              "children": [
+                  {
+                    "name": "Oanh 1",
+                    "spouse": "",
+                    "image": "images/nguyenngochan/nguyenthioanh/1.jpg",
+                  },
+                  {
+                    "name": "Oanh 2",
+                    "spouse": "",
+                    "image": "images/nguyenngochan/nguyenthioanh/2.jpg",
+                  }
+                ]
+            },
+            {
+              "name": "Cháu trai Nguyễn Văn Tuấn",
+              "spouse": "Cháu dâu Tâm",
+              "image": "images/nguyenngochan/nguyenvantuan.jpg",
+              "children": [
+                  {
+                    "name": "Tuan 1",
+                    "spouse": "",
+                    "image": "images/nguyenngochan/nguyenvantuan/1.jpg",
+                  },
+                  {
+                    "name": "Tuan 2",
+                    "spouse": "",
+                    "image": "images/nguyenngochan/nguyenvantuan/2.jpg",
+                  }
+                ]
+            },
+            {
+              "name": "Cháu gái Nguyễn Thị Yến",
+              "spouse": "Cháu rể Đồng",
+              "image": "images/nguyenngochan/nguyenthiyen.jpg",
+              
+            },
+            {
+              "name": "Cháu gái Nguyễn Thị Ưng",
+              "spouse": "Cháu rể Khánh",
+              "image": "images/nguyenngochan/nguyenthiung.jpg",
+              
+            },
+            {
+              "name": "Cháu gái Nguyễn Thị Ánh",
+              "spouse": "Cháu rể ...",
+              "image": "images/nguyenngochan/nguyenthianh.jpg",
+              
+            },
+            {
+              "name": "Cháu trai Nguyễn Tiến Thành",
+              "spouse": "Cháu dâu ...",
+              "image": "images/nguyenngochan/nguyentienthanh.jpg",
+              
+            }
+          ]
+        },
+        {
+          "name": "Con trai Nguyễn Thanh Hằng",
+          "spouse": "Con dâu Thị Bình",
+          "image": "images/nguyenthanhhang/nguyenthanhhang.jpg",
+          "children": [
+            {
+              "name": "Cháu trai Nguyễn Du",
+              "spouse": "Cháu dâu Lê Thị Thắm",
+              "image": "images/nguyenthanhhang/nguyendu.jpg",
+              "children": [
+                {
+                  "name": "Chắt trai Nguyễn Minh Đức",
+                  "spouse": "",
+                  "image": "images/nguyenthanhhang/nguyenminhduc.jpg",
+                
+                },
+                {
+                  "name": "Chắt trai Nguyễn Minh Đức",
+                  "spouse": "",
+                  "image": "images/nguyenthanhhang/nguyenminhduc.jpg",
+                
+                }
+              ]
+            },
+            {
+              "name": "Cháu trai Nguyễn Văn Dương",
+              "spouse": "Cháu dâu ...",
+              "image": "images/nguyenthanhhang/nguyenvanduong.jpg",
+            },
+            {
+              "name": "Cháu gái Nguyễn Thị Hương",
+              "spouse": "Cháu dâu ...",
+              "image": "images/nguyenthanhhang/nguyenthihuong.jpg",
+            }
+          ]
+        },
+        {
+          "name": "Con trai Nguyễn Ngọc Cơ",
+          "spouse": "Con dâu Trần Thị Nên",
+          "image": "images/nguyenngocco/nguyenngocco.jpg",
+          "children": [
+            {
+              "name": "Cháu gái Nguyễn Việt Hà",
+              "spouse": "Cháu rể Thái",
+              "image": "images/nguyenngocco/nguyenvietha.jpg",
+             
+            },
+            {
+              "name": "Cháu trai Nguyễn Việt Anh",
+              "spouse": "Cháu dâu ...",
+              "image": "images/nguyenngocco/nguyenvietanh.jpg",
+             
+            }
+          ]
+        },
+        {
+          "name": "Con trai Nguyễn Văn Sở",
+          "spouse": "Con dâu Thị Thạch",
+          "image": "https://via.placeholder.com/50",
+          "children": [
+            {
+              "name": "Cháu trai Nguyễn Văn Sơn",
+              "spouse": "Cháu dâu ...",
+              "image": "images/nguyenvanso/nguyenvanson.jpg",
+             
+            },
+            {
+              "name": "Cháu gái Nguyễn Thị Ngân",
+              "spouse": "Cháu rể ...",
+              "image": "images/nguyenvanso/nguyenthingan.jpg",
+             
+            }
+          ]
+        },
+        {
+          "name": "Con trai Nguyễn Văn Mạnh",
+          "spouse": "Con dâu Thị Ngoan",
+          "image": "images/nguyenvanmanh/nguyenvanmanh.jpg",
+          "children": [
+            {
+              "name": "Cháu trai Nguyễn Văn Dũng",
+              "spouse": "Cháu dâu Ly",
+              "image": "images/nguyenvanmanh/nguyenvandung.jpg",
+                "children": [
+                  {
+                    "name": "Dũng con 1",
+                    "spouse": "",
+                    "image": "images/nguyenvanmanh/nguyenvandung.jpg",
+                  },
+                  {
+                    "name": "Dũng con 2",
+                    "spouse": "Cháu dâu ...",
+                    "image": "images/nguyenvanmanh/nguyenvandung.jpg",
+                  }
+                ]
+            },
+            {
+              "name": "Cháu trai Nguyễn Ngọc Quý",
+              "spouse": "Cháu dâu Tuyết",
+              "image": "images/nguyenvanmanh/nguyenngocquy.jpg",
+             
+            },
+            {
+              "name": "Cháu gái Nguyễn Thị Lan",
+              "spouse": "Cháu rể ...",
+              "image": "images/nguyenvanmanh/nguyenthilan.jpg",
+             
+            }
+          ]
+        },
+        {
+          "name": "Con gái Nguyễn Thị Thiệm",
+          "spouse": "Con rể Lê Cảnh Bin",
+          "image": "https://via.placeholder.com/50",
+          "children": [
+            {
+              "name": "Cháu trai Lê Cảnh Bản",
+              "spouse": "Cháu dâu Vinh",
+              "image": "images/nguyenthithiem/lecanhban.jpg",
+              "children": [
+                {
+                  "name": "Cháu gái Lê Ngọc Anh",
+                  "spouse": "",
+                  "image": "images/nguyenthithiem/lengocanh.jpg"
+                },
+                {
+                  "name": "Cháu gái Lê Ngọc Anh",
+                  "spouse": "",
+                  "image": "images/nguyenthithiem/lengocanh.jpg"
+                }
+              ]
+             
+            },
+            {
+              "name": "Cháu gái Lê Thị Hội",
+              "spouse": "Cháu rể ...",
+              "image": "images/nguyenthithiem/lethihoi.jpg",
+             
+            },
+            {
+              "name": "Cháu trai Lê Cảnh Trường",
+              "spouse": "Cháu dâu ...",
+              "image": "images/nguyenthithiem/lecanhtruong.jpg",
+             
+            }
+          ]
+        },
+        {
+          "name": "Con gái Nguyễn Thị Khách",
+          "spouse": "Con rể Thoa",
+          "image": "https://via.placeholder.com/50",
+          "children": [
+            {
+              "name": "Cháu trai Thông",
+              "spouse": "Cháu dâu ...",
+              "image": "images/nguyenthikhach/thong.jpg",
+            },
+            {
+              "name": "Cháu trai Xuyên",
+              "spouse": "Cháu dâu ...",
+              "image": "images/nguyenthikhach/xuyen.jpg",
+            },
+            {
+              "name": "Cháu gái Thường",
+              "spouse": "Cháu rể ...",
+              "image": "images/nguyenthikhach/thuong.jpg",
+            },
+          ]
+        },
+        {
+          "name": "Con gái Nguyễn Thị Diện",
+          "spouse": "Con rể Trần Đình Ngọc",
+          "image": "images/nguyenthidien/nguyenthidien.jpg",
+          "children": [
+            {
+              "name": "Cháu trai Trần Đình Hiếu",
+              "spouse": "Cháu dâu Huệ",
+              "image": "images/nguyenthidien/trandinhhieu.jpg",
+            },
+            {
+              "name": "Cháu trai Trần Đình Hùng",
+              "spouse": "Cháu dâu ...",
+              "image": "images/nguyenthidien/trandinhhung.jpg",
+            },
+            {
+              "name": "Cháu gái Trần Thị Hồng",
+              "spouse": "Cháu rể Bang",
+              "image": "images/nguyenthidien/tranthịhong.jpg",
+            },
+            {
+              "name": "Cháu gái Trần Thị Hoa",
+              "spouse": "Cháu rể Tấn",
+              "image": "images/nguyenthidien/tranthịhoa.jpg",
+            },
+          ]
+         
+        },
+        {
+          "name": "Con gái Nguyễn Thị Hoan",
+          "spouse": "Con rể Thắng",
+          "image": "images/1.jpg",
+          "children": [
+            {
+              "name": "Cháu trai Hoàng Văn Thai",
+              "spouse": "Cháu dâu ..",
+              "image": "images/nguyenthihoan/hoangvanthai.jpg",
+            },
+            {
+              "name": "Cháu trai Hoàng Văn Thanh",
+              "spouse": "Cháu dâu ..",
+              "image": "images/nguyenthihoan/hoangvanthanh.jpg",
+            },
+            {
+              "name": "Cháu gái Hoàng Thị Vân",
+              "spouse": "Cháu rể ..",
+              "image": "images/nguyenthihoan/hoangthivan.jpg",
+            },
+            {
+              "name": "Cháu gái Hoàng Thị Minh",
+              "spouse": "Cháu rể ..",
+              "image": "images/nguyenthihoan/hoangthiminh.jpg",
+            }
+          ]
+        },
+        {
+          "name": "Con gái Nguyễn Thị Toan",
+          "spouse": "Con rể Phạm Đình Hiến",
+          "image": "images/nguyenthitoan/nguyenthitoan.jpg",
+          "phone": "0987654321",
+          "address": "Hồ Chí Minh, Việt Nam",
+          "description": "Bà là con gái út.",
+          "children": [
+            {
+              "name": "Cháu trai Phạm Đình Hoàng",
+              "spouse": "Cháu dâu Nguyễn Thị Trang",
+              "image": "images/nguyenthitoan/phamdinhhoang.jpg",
+              "phone": "0912345678",
+              "address": "Thanh Hoá, Việt Nam",
+              "description": "Anh là cháu đẹp trai nhất dòng họ",
+              "children": [
+                {
+                  "name": "Chắt gái Phạm An Hoài An",
+                  "spouse": "",
+                  "image": "images/nguyenthitoan/phamanhoaian.jpg",
+                  "phone": "",
+                  "address": "Thanh Hoá, Việt Nam",
+                  "description": "Cô bé đáng yêu."
+                }
+              ]
+            }
+          ]
+        }
+        // Các thành viên khác...
+      ]
+    };
+
+    const svg = d3.select("svg"),
+      width = +svg.attr("width"),
+      height = +svg.attr("height");
+
+    // Thêm định nghĩa clipPath vào SVG
+    svg.append("defs")
+      .append("clipPath")
+        .attr("id", "circleClip")
+      .append("circle")
+        .attr("r", 25)
+        .attr("cx", 0)
+        .attr("cy", 0);
+
+    const g = svg.append("g").attr("transform", "translate(40,40)");
+
+    const tree = d3.tree().size([width - 160, height - 200]);
+
+    const root = tree(d3.hierarchy(treeData, d => d.children));
+
+    const link = g.selectAll(".link")
+      .data(root.links())
+      .enter().append("path")
+      .attr("class", "link")
+      .attr("d", d3.linkVertical()
+        .x(d => d.x)
+        .y(d => d.y));
+
+    const node = g.selectAll(".node")
+      .data(root.descendants())
+      .enter().append("g")
+      .attr("class", "node")
+      .attr("transform", d => `translate(${d.x},${d.y})`)
+      .on("mouseover", function (event, d) { showInfo(d, this); })
+      .on("mouseout", function (event, d) { hideInfo(d, this); });
+
+    // Thêm sự kiện 'click' để phóng to hình ảnh và hiển thị thông tin
+    node.append("image")
+      .attr("href", d => d.data.image || "images/placeholder.jpg")
+      .attr("x", -25)
+      .attr("y", -25)
+      .attr("width", 50)
+      .attr("height", 50)
+      .attr("clip-path", "url(#circleClip)") // Áp dụng clipPath
+      .style("cursor", "pointer")
+      .on("click", function(event, d) {
+        // Hiển thị modal với hình ảnh phóng to và thông tin
+        d3.select("#modalImage")
+          .attr("src", d.data.image || "images/placeholder.jpg");
+        d3.select("#modalName").text(d.data.name + (d.data.spouse ? ' & ' + d.data.spouse : ''));
+        d3.select("#modalDescription").text(d.data.description || '');
+        d3.select("#modalPhone").text(d.data.phone || 'Không có thông tin');
+        d3.select("#modalAddress").text(d.data.address || 'Không có thông tin');
+        d3.select("#imageModal").style("display", "block");
+      });
+
+    // Append text placeholder for showing name info on hover
+    node.append("text")
+      .attr("class", "info-text")
+      .attr("x", 0)
+      .attr("y", 35)
+      .style("text-anchor", "middle")
+      .text("")
+      .style("display", "none");
+
+    // Show info on hover
+    function showInfo(d, element) {
+      const infoText = d3.select(element).select(".info-text");
+      infoText.text(`${d.data.name}${d.data.spouse ? ' & ' + d.data.spouse : ''}`)
+              .style("display", "block");
+    }
+
+    // Hide info on mouseout
+    function hideInfo(d, element) {
+      const infoText = d3.select(element).select(".info-text");
+      infoText.style("display", "none");
+    }
+
+    // Đóng modal khi click vào nút đóng
+    d3.select("#closeModal").on("click", function() {
+      d3.select("#imageModal").style("display", "none");
+    });
+
+    // Đóng modal khi click ra ngoài nội dung modal
+    d3.select("#imageModal").on("click", function(event) {
+      if (event.target.id === "imageModal") {
+        d3.select("#imageModal").style("display", "none");
+      }
+    });
+  </script>
+</body>
+</html>
