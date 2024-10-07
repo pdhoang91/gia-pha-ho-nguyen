@@ -1,0 +1,384 @@
+/* Định dạng chung cho trang web */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+h1 {
+  margin: 20px 0;
+  text-align: center;
+}
+
+#svgContainer {
+  width: 100%;
+  height: 600px;
+}
+
+#tree-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+
+.info-text {
+  font: 12px sans-serif;
+  fill: black;
+}
+
+/* CSS cho modal */
+#imageModal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+#modalContent {
+  max-width: 800px;
+  margin: 50px auto;
+  background-color: #333;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#parentInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 600px) {
+  #parentInfo {
+      flex-direction: row;
+      align-items: flex-start;
+  }
+}
+
+#slideshowContainer {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  height: 400px;
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: #333;
+  flex: 1;
+}
+
+#modalInfo {
+  flex: 1;
+  margin-top: 20px;
+  text-align: center;
+  color: #fff;
+  max-width: 500px;
+}
+
+@media (min-width: 600px) {
+  #modalInfo {
+      margin-top: 0;
+      margin-left: 20px;
+      text-align: left;
+  }
+}
+
+#modalInfo h2 {
+  margin-bottom: 10px;
+}
+
+#modalInfo p {
+  margin: 10px 0;
+}
+
+#modalDescription {
+  white-space: pre-wrap;
+}
+
+/* Hide the images by default */
+.mySlides {
+  display: none;
+  height: 100%;
+}
+
+/* Style cho hình ảnh trong slideshow */
+.mySlides img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 10px;
+}
+
+/* Nút chuyển ảnh */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 15px 20px;
+  color: white;
+  font-size: 24px;
+  background-color: rgba(0,0,0,0.6);
+  border: none;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+.prev i, .next i, .prev span, .next span {
+  pointer-events: none;
+}
+
+.prev span, .next span {
+  font-size: 18px;
+}
+
+/* Chỉ báo số trang */
+#slideIndicator {
+  position: absolute;
+  bottom: 10px;
+  right: 50%;
+  transform: translateX(50%);
+  color: white;
+  font-size: 16px;
+  background-color: rgba(0,0,0,0.6);
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+/* CSS cho phần con cái */
+#childrenSection {
+  margin-top: 20px;
+}
+
+#childrenSection h3 {
+  color: #fff;
+  text-align: center;
+}
+
+#childrenImages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.child-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* Nút đóng modal */
+#closeModal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#closeModal:hover {
+  color: #bbb;
+}
+
+/* CSS cho nút zoom */
+#zoomControls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  z-index: 10000;
+}
+
+#zoomControls button {
+  display: block;
+  margin-bottom: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#zoomControls button:hover {
+  background-color: #45a049;
+}
+
+#zoomControls button:active {
+  background-color: #3e8e41;
+}
+
+/* CSS cho nút mở rộng/thu gọn */
+.node-button {
+  cursor: pointer;
+}
+
+.node-button-text {
+  pointer-events: none;
+}
+
+button.prev, button.next {
+  background: none; /* Không có nền */
+  border: none; /* Không có đường viền */
+  cursor: pointer; /* Con trỏ chuột */
+  padding: 10px;
+  font-size: 24px; /* Tăng kích thước icon */
+  color: #555; /* Màu của icon */
+}
+
+/* CSS cho phần familyActivities */
+#familyActivities {
+  margin-top: 20px;
+  width: 100%;
+}
+
+#familyActivities .activity {
+  margin-bottom: 20px;
+}
+
+#familyActivities iframe, 
+#familyActivities video, 
+#familyActivities img {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+  #modalContent {
+      width: 90%;
+      margin: 20px auto;
+      padding: 10px;
+  }
+  
+  #slideshowContainer {
+      max-width: 100%;
+      height: auto;
+  }
+  
+  #modalInfo {
+      max-width: 100%;
+      margin-left: 0;
+  }
+  
+  .child-image {
+      width: 60px;
+      height: 60px;
+  }
+  
+  #zoomControls button {
+      padding: 8px 16px;
+      font-size: 14px;
+  }
+  
+  .prev, .next {
+      padding: 10px 15px;
+      font-size: 20px;
+  }
+  
+  #closeModal {
+      font-size: 30px;
+      top: 10px;
+      right: 10px;
+  }
+  
+  /* Đảm bảo iframe và video không vượt quá kích thước màn hình */
+  #familyActivities iframe, 
+  #familyActivities video {
+      height: auto;
+  }
+  
+  /* Tăng kích thước chữ cho dễ đọc trên mobile */
+  body {
+      font-size: 16px;
+  }
+
+  #modalInfo h2 {
+      font-size: 1.5em;
+  }
+
+  #modalInfo p {
+      font-size: 1em;
+  }
+  
+  /* Đảm bảo các video iframe và video tag responsive */
+  .responsive-video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* Tỷ lệ 16:9 */
+      padding-top: 25px;
+      height: 0;
+      overflow: hidden;
+      max-width: 100%;
+  }
+  
+  .responsive-video-container iframe,
+  .responsive-video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+  }
+}
+
+/* Responsive iframe and video containers */
+.responsive-video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* Tỷ lệ 16:9 */
+  padding-top: 25px;
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.responsive-video-container iframe,
+.responsive-video-container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
