@@ -44,12 +44,15 @@
     }
 
     #modalContent {
-      display: flex;
       max-width: 800px;
       margin: 50px auto;
       background-color: #333;
       padding: 20px;
       border-radius: 10px;
+    }
+
+    #parentInfo {
+      display: flex;
     }
 
     #modalImage {
@@ -72,6 +75,29 @@
 
     #modalInfo p {
       margin: 5px 0;
+    }
+
+    #childrenSection {
+      margin-top: 20px;
+    }
+
+    #childrenSection h3 {
+      color: #fff;
+    }
+
+    #childrenImages {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .child-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
     }
 
     #closeModal {
@@ -129,18 +155,25 @@
   <div id="imageModal">
     <span id="closeModal">&times;</span>
     <div id="modalContent">
-      <img id="modalImage">
-      <div id="modalInfo">
-        <h2 id="modalName"></h2>
-        <p id="modalDescription"></p>
-        <p><strong>Số điện thoại:</strong> <span id="modalPhone"></span></p>
-        <p><strong>Địa chỉ:</strong> <span id="modalAddress"></span></p>
+      <div id="parentInfo">
+        <img id="modalImage">
+        <div id="modalInfo">
+          <h2 id="modalName"></h2>
+          <p id="modalDescription"></p>
+          <p><strong>Số điện thoại:</strong> <span id="modalPhone"></span></p>
+          <p><strong>Địa chỉ:</strong> <span id="modalAddress"></span></p>
+        </div>
+      </div>
+      <div id="childrenSection">
+        <h3>Con cái:</h3>
+        <div id="childrenImages"></div>
       </div>
     </div>
   </div>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
+    // Dữ liệu cây gia phả (dữ liệu mẫu)
      // Dữ liệu cây gia phả (cập nhật nếu cần)
      const treeData = {
       "name": "Chồng Nguyễn Văn Hoành",
@@ -1259,12 +1292,43 @@
 
     // Hiển thị thông tin khi click vào hình ảnh
     function showModal(d) {
+      // Hiển thị thông tin của cha/mẹ
       d3.select('#modalImage')
         .attr('src', d.data.image || 'images/placeholder.jpg');
       d3.select('#modalName').text(d.data.name + (d.data.spouse ? ' & ' + d.data.spouse : ''));
       d3.select('#modalDescription').text(d.data.description || '');
       d3.select('#modalPhone').text(d.data.phone || 'Không có thông tin');
       d3.select('#modalAddress').text(d.data.address || 'Không có thông tin');
+
+      // Xóa nội dung cũ của phần childrenImages
+      d3.select('#childrenImages').html('');
+
+      // Kiểm tra nếu người này có con
+      if (d.children || d._children) {
+        const children = d.children || d._children;
+
+        // Với mỗi con, thêm hình ảnh vào modal
+        children.forEach(child => {
+          d3.select('#childrenImages')
+            .append('img')
+            .attr('src', child.data.image || 'images/placeholder.jpg')
+            .attr('alt', child.data.name)
+            .attr('title', child.data.name)
+            .attr('class', 'child-image')
+            .on('click', function() {
+              // Khi click vào hình ảnh con, hiển thị thông tin của con
+              showModal(child);
+            });
+        });
+      } else {
+        // Nếu không có con, hiển thị thông báo
+        d3.select('#childrenImages')
+          .append('p')
+          .style('color', '#fff')
+          .text('Không có thông tin về con cái.');
+      }
+
+      // Hiển thị modal
       d3.select('#imageModal').style('display', 'block');
     }
 
