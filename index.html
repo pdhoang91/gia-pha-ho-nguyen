@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Gia Phả Họ Nguyễn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <!-- Liên kết đến file CSS -->
   <link rel="stylesheet" href="styles.css">
   <!-- Liên kết đến Font Awesome với giá trị integrity chính xác -->
@@ -19,9 +21,9 @@
 
   <!-- Nút điều khiển zoom -->
   <div id="zoomControls">
-    <button id="zoomIn">Phóng to</button>
-    <button id="zoomOut">Thu nhỏ</button>
-    <button id="resetZoom">Đặt lại</button>
+    <button id="zoomIn" title="Phóng to"><i class="fas fa-search-plus"></i></button>
+    <button id="zoomOut" title="Thu nhỏ"><i class="fas fa-search-minus"></i></button>
+    <button id="resetZoom" title="Đặt lại"><i class="fas fa-undo"></i></button>
   </div>
 
   <!-- Modal để hiển thị hình ảnh phóng to và thông tin -->
@@ -33,10 +35,10 @@
           <div id="slideshowImages"></div>
           <!-- Nút điều khiển slideshow -->
           <button class="prev" onclick="plusSlides(-1)">
-            <i class="fas fa-arrow-circle-left"></i>
+            <i class="fas fa-arrow-left"></i>
           </button>
           <button class="next" onclick="plusSlides(1)">
-            <i class="fas fa-arrow-circle-right"></i>
+            <i class="fas fa-arrow-right"></i>
           </button>
           <!-- Chỉ báo số trang -->
           <div id="slideIndicator"></div>
@@ -58,8 +60,13 @@
       </div>
     </div>
     <!-- Load TikTok embed.js script once, after modalContent is defined -->
-    <!-- Example TikTok Embed -->
-<script async src="https://www.tiktok.com/embed.js"></script>
+    <script async src="https://www.tiktok.com/embed.js"></script>
+  </div>
+
+  <!-- Modal để hiển thị ảnh full size -->
+  <div id="fullImageModal">
+    <span id="closeFullImageModal">&times;</span>
+    <img id="fullImage" src="" alt="Full Size Image">
   </div>
 
   <!-- Liên kết đến thư viện D3.js -->

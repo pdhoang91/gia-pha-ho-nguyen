@@ -929,22 +929,26 @@ const treeData = {
             {
                 "type": "image",
                 "src": "images/nguyenthitoan/giadinh.jpg",
-                "description": "Ảnh gia đình."
+                "description": "Ảnh gia đình.",
+                "source": "local",
+                "images": [
+                  "activity/1.jpg",
+                  "activity/2.jpg",
+                  "activity/3.jpg"
+              ],
+
             },
             {
                 "type": "video",
                 "src": "https://www.facebook.com/reel/1172462167324318",
-                "description": "Video giỗ ông ngoại"
-            },
-            {
-                "type": "video",
-                "src": "https://www.tiktok.com/@iamhoangpham/video/7356139709321579784",
-                "description": "TikTok video về đám hỏi của Hoàng."
+                "description": "Video giỗ ông ngoại",
+                "source": "facebook"
             },
             {
                 "type": "video",
                 "src": "https://www.facebook.com/reel/3212539605703579",
-                "description": "Video về quê đám cưới anh Việt Anh"
+                "description": "Video về quê đám cưới",
+                "source": "facebook"
             }
         ]
     }
@@ -952,28 +956,27 @@ const treeData = {
     ]
   };
 
-
   const svg = d3.select("#tree-svg"),
-  width = document.getElementById('svgContainer').clientWidth,
-  height = document.getElementById('svgContainer').clientHeight;
+    width = document.getElementById('svgContainer').clientWidth,
+    height = document.getElementById('svgContainer').clientHeight;
 
 // Thêm định nghĩa clipPath vào SVG
 svg.append("defs")
-  .append("clipPath")
-      .attr("id", "circleClip")
-  .append("circle")
-      .attr("r", 25)
-      .attr("cx", 0)
-      .attr("cy", 0);
+    .append("clipPath")
+    .attr("id", "circleClip")
+    .append("circle")
+    .attr("r", 25)
+    .attr("cx", 0)
+    .attr("cy", 0);
 
 const g = svg.append("g").attr("transform", "translate(40,40)");
 
 // Tạo đối tượng zoom
 const zoom = d3.zoom()
-  .scaleExtent([0.1, 5])
-  .on('zoom', (event) => {
-      g.attr('transform', event.transform);
-  });
+    .scaleExtent([0.1, 5])
+    .on('zoom', (event) => {
+        g.attr('transform', event.transform);
+    });
 
 svg.call(zoom);
 
@@ -985,207 +988,215 @@ root.y0 = 0;
 
 // Thu gọn tất cả các node ban đầu
 if (root.children) {
-  root.children.forEach(collapse);
+    root.children.forEach(collapse);
 }
 
 update(root);
 
 function update(source) {
-  const treeLayout = d3.tree().size([width, height]);
-  const treeDataLayout = treeLayout(root);
+    const treeLayout = d3.tree().size([width, height]);
+    const treeDataLayout = treeLayout(root);
 
-  // Cập nhật các nút
-  const nodes = treeDataLayout.descendants();
-  const links = treeDataLayout.links();
+    // Cập nhật các nút
+    const nodes = treeDataLayout.descendants();
+    const links = treeDataLayout.links();
 
-  // Đặt vị trí cho các nút
-  nodes.forEach(d => {
-      d.y = d.depth * 180;
-  });
+    // Đặt vị trí cho các nút
+    nodes.forEach(d => {
+        d.y = d.depth * 180;
+    });
 
-  // ------------------- Nodes section -------------------
+    // ------------------- Nodes section -------------------
 
-  // Cập nhật các nút
-  const node = g.selectAll('g.node')
-      .data(nodes, d => d.id || (d.id = ++i));
+    // Cập nhật các nút
+    const node = g.selectAll('g.node')
+        .data(nodes, d => d.id || (d.id = ++i));
 
-  // Enter mới cho các nút
-  const nodeEnter = node.enter().append('g')
-      .attr('class', 'node')
-      .attr('transform', d => `translate(${source.x0},${source.y0})`)
-      .on('click', (event, d) => {
-          toggle(d);
-          update(d);
-      })
-      .on('mouseover', function(event, d) { showInfo(d, this); })
-      .on('mouseout', function(event, d) { hideInfo(d, this); });
+    // Enter mới cho các nút
+    const nodeEnter = node.enter().append('g')
+        .attr('class', 'node')
+        .attr('transform', d => `translate(${source.x0},${source.y0})`)
+        .on('click', (event, d) => {
+            toggle(d);
+            update(d);
+        })
+        .on('mouseover', function(event, d) { showInfo(d, this); })
+        .on('mouseout', function(event, d) { hideInfo(d, this); });
 
-  // Thêm hình ảnh cho nút
-  nodeEnter.append('image')
-      .attr('href', d => {
-          if (d.data.images && d.data.images.length > 0) {
-              return d.data.images[0];
-          } else if (d.data.image) {
-              return d.data.image;
-          } else {
-              return 'images/50.png'; // Đường dẫn đến ảnh mặc định
-          }
-      })
-      .attr('x', -25)
-      .attr('y', -25)
-      .attr('width', 50)
-      .attr('height', 50)
-      .attr('clip-path', 'url(#circleClip)')
-      .style('cursor', 'pointer')
-      .on('click', function(event, d) {
-          event.stopPropagation();
-          showModal(d);
-      });
+    // Thêm hình ảnh cho nút
+    nodeEnter.append('image')
+        .attr('href', d => {
+            if (d.data.images && d.data.images.length > 0) {
+                return d.data.images[0];
+            } else if (d.data.image) {
+                return d.data.image;
+            } else {
+                return 'images/50.png'; // Đường dẫn đến ảnh mặc định
+            }
+        })
+        .attr('x', -25)
+        .attr('y', -25)
+        .attr('width', 50)
+        .attr('height', 50)
+        .attr('clip-path', 'url(#circleClip)')
+        .style('cursor', 'pointer')
+        .on('click', function(event, d) {
+            event.stopPropagation();
+            showModal(d);
+        });
 
-  // Thêm văn bản cho nút
-  nodeEnter.append('text')
-      .attr('class', 'info-text')
-      .attr('x', 0)
-      .attr('y', 35)
-      .style('text-anchor', 'middle')
-      .text('')
-      .style('display', 'none');
+    // Thêm văn bản cho nút
+    nodeEnter.append('text')
+        .attr('class', 'info-text')
+        .attr('x', 0)
+        .attr('y', 35)
+        .style('text-anchor', 'middle')
+        .text('')
+        .style('display', 'none');
 
-  // Thêm nút mở rộng/thu gọn nếu có con
-  nodeEnter.filter(d => d.children || d._children).append('circle')
-      .attr('class', 'node-button')
-      .attr('r', 10)
-      .attr('cx', 0)
-      .attr('cy', -35)
-      .style('fill', d => d._children ? '#555' : '#999')
-      .on('click', function(event, d) {
-          event.stopPropagation();
-          toggle(d);
-          update(d);
-      });
+    // Thêm nút mở rộng/thu gọn nếu có con
+    nodeEnter.filter(d => d.children || d._children).append('circle')
+        .attr('class', 'node-button')
+        .attr('r', 10)
+        .attr('cx', 0)
+        .attr('cy', -35)
+        .style('fill', d => d._children ? '#555' : '#999')
+        .on('click', function(event, d) {
+            event.stopPropagation();
+            toggle(d);
+            update(d);
+        });
 
-  nodeEnter.filter(d => d.children || d._children).append('text')
-      .attr('class', 'node-button-text')
-      .attr('x', 0)
-      .attr('y', -31)
-      .style('text-anchor', 'middle')
-      .style('font-size', '14px')
-      .style('fill', 'white')
-      .text(d => d._children ? '+' : '-');
+    nodeEnter.filter(d => d.children || d._children).append('text')
+        .attr('class', 'node-button-text')
+        .attr('x', 0)
+        .attr('y', -31)
+        .style('text-anchor', 'middle')
+        .style('font-size', '14px')
+        .style('fill', 'white')
+        .text(d => d._children ? '+' : '-');
 
-  // UPDATE
-  const nodeUpdate = nodeEnter.merge(node);
+    // UPDATE
+    const nodeUpdate = nodeEnter.merge(node);
 
-  // Chuyển đến vị trí mới
-  nodeUpdate.transition()
-      .duration(200)
-      .attr('transform', d => `translate(${d.x},${d.y})`);
+    // Chuyển đến vị trí mới
+    nodeUpdate.transition()
+        .duration(200)
+        .attr('transform', d => `translate(${d.x},${d.y})`);
 
-  // Xóa các nút không còn tồn tại
-  const nodeExit = node.exit().transition()
-      .duration(200)
-      .attr('transform', d => `translate(${source.x},${source.y})`)
-      .remove();
+    // Xóa các nút không còn tồn tại
+    const nodeExit = node.exit().transition()
+        .duration(200)
+        .attr('transform', d => `translate(${source.x},${source.y})`)
+        .remove();
 
-  // ------------------- Links section -------------------
+    // ------------------- Links section -------------------
 
-  // Cập nhật các liên kết
-  const link = g.selectAll('path.link')
-      .data(links, d => d.target.id);
+    // Cập nhật các liên kết
+    const link = g.selectAll('path.link')
+        .data(links, d => d.target.id);
 
-  // Enter mới cho các liên kết
-  const linkEnter = link.enter().insert('path', "g")
-      .attr('class', 'link')
-      .attr('d', d => {
-          const o = {x: source.x0, y: source.y0};
-          return diagonal(o, o);
-      });
+    // Enter mới cho các liên kết
+    const linkEnter = link.enter().insert('path', "g")
+        .attr('class', 'link')
+        .attr('d', d => {
+            const o = {x: source.x0, y: source.y0};
+            return diagonal(o, o);
+        });
 
-  // UPDATE
-  const linkUpdate = linkEnter.merge(link);
+    // UPDATE
+    const linkUpdate = linkEnter.merge(link);
 
-  // Chuyển đến vị trí mới
-  linkUpdate.transition()
-      .duration(200)
-      .attr('d', d => diagonal(d.source, d.target));
+    // Chuyển đến vị trí mới
+    linkUpdate.transition()
+        .duration(200)
+        .attr('d', d => diagonal(d.source, d.target));
 
-  // Xóa các liên kết không còn tồn tại
-  const linkExit = link.exit().transition()
-      .duration(200)
-      .attr('d', d => {
-          const o = {x: source.x, y: source.y};
-          return diagonal(o, o);
-      })
-      .remove();
+    // Xóa các liên kết không còn tồn tại
+    const linkExit = link.exit().transition()
+        .duration(200)
+        .attr('d', d => {
+            const o = {x: source.x, y: source.y};
+            return diagonal(o, o);
+        })
+        .remove();
 
-  // Lưu vị trí cũ cho chuyển đổi
-  nodes.forEach(d => {
-      d.x0 = d.x;
-      d.y0 = d.y;
-  });
+    // Lưu vị trí cũ cho chuyển đổi
+    nodes.forEach(d => {
+        d.x0 = d.x;
+        d.y0 = d.y;
+    });
 }
 
 // Hàm tạo đường liên kết giữa các nút
 function diagonal(s, d) {
-  return `M ${s.x} ${s.y}
-          C ${(s.x + d.x) / 2} ${s.y},
-            ${(s.x + d.x) / 2} ${d.y},
-            ${d.x} ${d.y}`;
+    return `M ${s.x} ${s.y}
+            C ${(s.x + d.x) / 2} ${s.y},
+              ${(s.x + d.x) / 2} ${d.y},
+              ${d.x} ${d.y}`;
 }
 
 // Hàm thu gọn các nút
 function collapse(d) {
-  if (d.children) {
-      d._children = d.children;
-      d._children.forEach(collapse);
-      d.children = null;
-  }
+    if (d.children) {
+        d._children = d.children;
+        d._children.forEach(collapse);
+        d.children = null;
+    }
 }
 
 // Hàm chuyển đổi trạng thái mở rộng/thu gọn
 function toggle(d) {
-  if (d.children) {
-      d._children = d.children;
-      d.children = null;
-  } else {
-      d.children = d._children;
-      d._children = null;
-  }
+    if (d.children) {
+        d._children = d.children;
+        d.children = null;
+    } else {
+        d.children = d._children;
+        d._children = null;
+    }
 }
 
 // Hàm đặt lại cây về trạng thái ban đầu
 function resetTree() {
-  // Thu gọn tất cả các nút
-  if (root.children) {
-      root.children.forEach(collapse);
-  }
-  update(root);
+    // Thu gọn tất cả các nút
+    if (root.children) {
+        root.children.forEach(collapse);
+    }
+    update(root);
 }
 
 // Utility functions to convert video URLs to embed formats
 function convertYouTubeLinkToEmbed(url) {
-  let videoId = '';
-  const youtubeRegex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-  const match = url.match(youtubeRegex);
-  if (match && match[1]) {
-      videoId = match[1];
-      return `https://www.youtube.com/embed/${videoId}`;
-  }
-  return null;
+    let videoId = '';
+    const youtubeRegex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(youtubeRegex);
+    if (match && match[1]) {
+        videoId = match[1];
+        return `https://www.youtube.com/embed/${videoId}`;
+    }
+    return null;
 }
 
 function extractTikTokVideoID(url) {
-  const regex = /\/video\/(\d+)/;
-  const match = url.match(regex);
-  return match ? match[1] : null;
+    const regex = /\/video\/(\d+)/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
 }
 
 function convertTikTokLinkToEmbed(url) {
-  const videoId = extractTikTokVideoID(url);
-  if (videoId) {
-      return `https://www.tiktok.com/embed/${videoId}`;
-  }
-  return null;
+    const videoId = extractTikTokVideoID(url);
+    if (videoId) {
+        return `https://www.tiktok.com/embed/${videoId}`;
+    }
+    return null;
+}
+
+function convertFacebookReelLinkToEmbed(url) {
+    // Facebook Reels embed URL format
+    // Example: https://www.facebook.com/reel/1234567890
+    // Embed format: https://www.facebook.com/plugins/video.php?href={encoded_url}&show_text=false&width=500
+    const encodedURL = encodeURIComponent(url);
+    return `https://www.facebook.com/plugins/video.php?href=${encodedURL}&show_text=false&width=500`;
 }
 
 // Flag to check if TikTok embed script has been loaded
@@ -1193,271 +1204,348 @@ let isTikTokScriptLoaded = false;
 
 // Hàm thu thập tất cả các activities từ node và các node con
 function collectAllActivities(node) {
-  let activities = [];
+    let activities = [];
 
-  if (node.data.activities && node.data.activities.length > 0) {
-      activities = activities.concat(node.data.activities);
-  }
+    if (node.data.activities && node.data.activities.length > 0) {
+        activities = activities.concat(node.data.activities);
+    }
 
-  if (node.children) {
-      node.children.forEach(child => {
-          activities = activities.concat(collectAllActivities(child));
-      });
-  }
+    if (node.children) {
+        node.children.forEach(child => {
+            activities = activities.concat(collectAllActivities(child));
+        });
+    }
 
-  if (node._children) {
-      node._children.forEach(child => {
-          activities = activities.concat(collectAllActivities(child));
-      });
-  }
+    if (node._children) {
+        node._children.forEach(child => {
+            activities = activities.concat(collectAllActivities(child));
+        });
+    }
 
-  return activities;
+    return activities;
 }
 
 // Hàm hiển thị modal
 function showModal(d) {
-  // Hiển thị thông tin cơ bản
-  d3.select('#modalName').text(d.data.name + (d.data.spouse ? ' & ' + d.data.spouse : ''));
-  d3.select('#modalDescription').html(d.data.description || '');
-  d3.select('#modalPhone').text(d.data.phone || 'Không có thông tin');
-  d3.select('#modalAddress').text(d.data.address || 'Không có thông tin');
+    // Ẩn các nút zoom
+    d3.select('#zoomControls').style('display', 'none');
 
-  // Clear previous slideshow content
-  d3.select('#slideshowImages').html('');
+    // Hiển thị thông tin cơ bản
+    d3.select('#modalName').text(d.data.name + (d.data.spouse ? ' & ' + d.data.spouse : ''));
+    d3.select('#modalDescription').html(d.data.description || '');
+    d3.select('#modalPhone').text(d.data.phone || 'Không có thông tin');
+    d3.select('#modalAddress').text(d.data.address || 'Không có thông tin');
 
-  // Get list of images
-  let images = [];
-  if (d.data.images && d.data.images.length > 0) {
-      images = d.data.images;
-  } else if (d.data.image) {
-      images = [d.data.image];
-  } else {
-      images = ['images/50.png']; // Default image
-  }
+    // Clear previous slideshow content
+    d3.select('#slideshowImages').html('');
 
-  // Add images to slideshow
-  images.forEach((imgSrc, index) => {
-      d3.select('#slideshowImages')
-          .append('div')
-          .attr('class', 'mySlides')
-          .append('img')
-          .attr('src', imgSrc)
-          .attr('style', 'width:100%');
-  });
+    // Get list of images
+    let images = [];
+    if (d.data.images && d.data.images.length > 0) {
+        images = d.data.images;
+    } else if (d.data.image) {
+        images = [d.data.image];
+    } else {
+        images = ['images/50.png']; // Default image
+    }
 
-  // Show first slide
-  slideIndex = 1;
-  showSlides(slideIndex);
+    // Add images to slideshow
+    images.forEach((imgSrc, index) => {
+        d3.select('#slideshowImages')
+            .append('div')
+            .attr('class', 'mySlides')
+            .append('img')
+            .attr('src', imgSrc)
+            .attr('style', 'width:100%')
+            .on('dblclick', function() {
+                showFullImage(imgSrc);
+            });
+    });
 
-  // Clear previous children images
-  d3.select('#childrenImages').html('');
+    // Show first slide
+    slideIndex = 1;
+    showSlides(slideIndex);
 
-  // Check if the person has children
-  if (d.children || d._children) {
-      const children = d.children || d._children;
+    // Clear previous children images
+    d3.select('#childrenImages').html('');
 
-      // Add each child's image to the modal
-      children.forEach(child => {
-          let childImage = 'images/50.png'; // Default image
+    // Check if the person has children
+    if (d.children || d._children) {
+        const children = d.children || d._children;
 
-          if (child.data.images && child.data.images.length > 0) {
-              childImage = child.data.images[0];
-          } else if (child.data.image) {
-              childImage = child.data.image;
-          }
+        // Add each child's image to the modal
+        children.forEach(child => {
+            let childImage = 'images/50.png'; // Default image
 
-          d3.select('#childrenImages')
-              .append('img')
-              .attr('src', childImage)
-              .attr('alt', child.data.name)
-              .attr('title', child.data.name)
-              .attr('class', 'child-image')
-              .on('click touchstart', function() { // Thêm touchstart
-                  // Click on child image to show child info
-                  showModal(child);
-              });
-      });
-  } else {
-      // If no children, show a message
-      d3.select('#childrenImages')
-          .append('p')
-          .style('color', '#fff')
-          .text('Không có thông tin về con cái.');
-  }
+            if (child.data.images && child.data.images.length > 0) {
+                childImage = child.data.images[0];
+            } else if (child.data.image) {
+                childImage = child.data.image;
+            }
 
-  // Display family activities (videos, images)
-  d3.select('#familyActivities').html(''); // Clear existing activities
-  d3.select('#familyActivities').append('h3').text('Hoạt động gia đình:');
+            d3.select('#childrenImages')
+                .append('img')
+                .attr('src', childImage)
+                .attr('alt', child.data.name)
+                .attr('title', child.data.name)
+                .attr('class', 'child-image')
+                .on('click touchstart', function() { // Thêm touchstart
+                    // Click on child image to show child info
+                    showModal(child);
+                });
+        });
+    } else {
+        // If no children, show a message
+        d3.select('#childrenImages')
+            .append('p')
+            .style('color', '#bdc3c7') // Lighter color
+            .text('Không có thông tin về con cái.');
+    }
 
-  // Thu thập tất cả các activities từ node cha và các node con
-  const allActivities = collectAllActivities(d);
+    // Display family activities (videos, images)
+    d3.select('#familyActivities').html(''); // Clear existing activities
+    d3.select('#familyActivities').append('h3').text('Hoạt động gia đình:');
 
-  // Loại bỏ activities trùng lặp
-  const uniqueActivities = [];
-  const activitySet = new Set();
+    // Thu thập tất cả các activities từ node cha và các node con
+    const allActivities = collectAllActivities(d);
 
-  allActivities.forEach(activity => {
-      const key = `${activity.type}-${activity.src}`;
-      if (!activitySet.has(key)) {
-          activitySet.add(key);
-          uniqueActivities.push(activity);
-      }
-  });
+    // Loại bỏ activities trùng lặp
+    const uniqueActivities = [];
+    const activitySet = new Set();
 
-  if (uniqueActivities.length > 0) {
-      uniqueActivities.forEach(activity => {
-          const activityDiv = d3.select('#familyActivities')
-              .append('div')
-              .attr('class', 'activity');
+    allActivities.forEach(activity => {
+        const key = `${activity.type}-${activity.src}`;
+        if (!activitySet.has(key)) {
+            activitySet.add(key);
+            uniqueActivities.push(activity);
+        }
+    });
 
-          if (activity.type === 'video') {
-              let embedHTML = '';
-              if (activity.src.includes('youtube.com') || activity.src.includes('youtu.be')) {
-                  const youtubeEmbedLink = convertYouTubeLinkToEmbed(activity.src);
-                  if (youtubeEmbedLink) {
-                      embedHTML = `
-                          <div class="responsive-video-container">
-                              <iframe 
-                                  src="${youtubeEmbedLink}" 
-                                  title="YouTube video player" 
-                                  frameborder="0" 
-                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                  allowfullscreen>
-                              </iframe>
-                          </div>
-                      `;
-                  }
-              } else if (activity.src.includes('tiktok.com')) {
-                const tiktokEmbedLink = convertTikTokLinkToEmbed(activity.src);
-                const videoId = extractTikTokVideoID(activity.src);
-                if (tiktokEmbedLink && videoId) {
-                    embedHTML = `
-                        <blockquote class="tiktok-embed" cite="${activity.src}" data-video-id="${videoId}" style="max-width: 605px;min-width: 325px;">
-                            <section></section>
-                        </blockquote>
-                    `;
-                    // Load TikTok's embed.js script if not already loaded
-                    if (!isTikTokScriptLoaded) {
-                        const script = document.createElement('script');
-                        script.async = true;
-                        script.src = "https://www.tiktok.com/embed.js";
-                        document.body.appendChild(script);
-                        isTikTokScriptLoaded = true;
-                    }
+    if (uniqueActivities.length > 0) {
+        uniqueActivities.forEach(activity => {
+            const activityDiv = d3.select('#familyActivities')
+                .append('div')
+                .attr('class', 'activity');
+
+            if (activity.type === 'video') {
+                let embedHTML = '';
+                // Use the 'source' field instead of checking URL
+                switch (activity.source) {
+                    case 'youtube':
+                        const youtubeEmbedLink = convertYouTubeLinkToEmbed(activity.src);
+                        if (youtubeEmbedLink) {
+                            embedHTML = `
+                                <div class="responsive-video-container">
+                                    <iframe 
+                                        src="${youtubeEmbedLink}" 
+                                        title="YouTube video player" 
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                    </iframe>
+                                </div>
+                            `;
+                        }
+                        break;
+                    case 'tiktok':
+                        const tiktokEmbedLink = convertTikTokLinkToEmbed(activity.src);
+                        const videoId = extractTikTokVideoID(activity.src);
+                        if (tiktokEmbedLink && videoId) {
+                            embedHTML = `
+                                <blockquote class="tiktok-embed" cite="${activity.src}" data-video-id="${videoId}" style="max-width: 605px; min-width: 325px;">
+                                    <section></section>
+                                </blockquote>
+                            `;
+                            // Load TikTok's embed.js script if not already loaded
+                            if (!isTikTokScriptLoaded) {
+                                const script = document.createElement('script');
+                                script.async = true;
+                                script.src = "https://www.tiktok.com/embed.js";
+                                document.body.appendChild(script);
+                                isTikTokScriptLoaded = true;
+                            }
+                        }
+                        break;
+                    case 'facebook':
+                        const facebookEmbedLink = convertFacebookReelLinkToEmbed(activity.src);
+                        embedHTML = `
+                            <div class="responsive-video-container">
+                                <iframe 
+                                    src="${facebookEmbedLink}" 
+                                    style="border:none;overflow:hidden" 
+                                    scrolling="no" 
+                                    frameborder="0" 
+                                    allowfullscreen="true" 
+                                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+                                </iframe>
+                            </div>
+                        `;
+                        break;
+                    case 'local':
+                        // Handle local videos
+                        embedHTML = `
+                            <div class="responsive-video-container">
+                                <video controls>
+                                    <source src="${activity.src}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        `;
+                        break;
+                    default:
+                        console.warn(`Unknown video source: ${activity.source}`);
                 }
-              } else if (activity.src.includes('facebook.com')) {
-                  const facebookEmbedLink = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(activity.src)}&show_text=false&width=500`;
-                  embedHTML = `
-                      <div class="responsive-video-container">
-                          <iframe 
-                              src="${facebookEmbedLink}" 
-                              style="border:none;overflow:hidden" 
-                              scrolling="no" 
-                              frameborder="0" 
-                              allowfullscreen="true" 
-                              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
-                          </iframe>
-                      </div>
-                  `;
-              } else {
-                  // Handle local videos
-                  embedHTML = `
-                      <div class="responsive-video-container">
-                          <video controls>
-                              <source src="${activity.src}" type="video/mp4">
-                              Your browser does not support the video tag.
-                          </video>
-                      </div>
-                  `;
-              }
 
-              if (embedHTML) {
-                  activityDiv.append('div').html(embedHTML);
-              }
+                if (embedHTML) {
+                    activityDiv.append('div').html(embedHTML);
+                }
 
-          } else if (activity.type === 'image') {
+            } else if (activity.type === 'image') {
               activityDiv.append('img')
-                  .attr('src', activity.src)
-                  .style('width', '100%')
-                  .style('object-fit', 'cover');
-          }
+              .attr('src', activity.src)
+              .style('width', '100%')
+              .style('object-fit', 'cover')
+              .on('dblclick', function() {
+                  showFullImage(activity.src);
+              });
+            }
 
-          activityDiv.append('p').text(activity.description || '');
-      });
-  } else {
-      d3.select('#familyActivities')
-          .append('p')
-          .style('color', '#fff')
-          .text('Không có hoạt động gia đình.');
-  }
+            // Thêm mô tả với màu sắc nhẹ hơn và font chữ đồng nhất
+            activityDiv.append('p')
+                .text(activity.description || '')
+                .style('color', '#bdc3c7') // Lighter color
+                .style('font-family', 'Roboto, sans-serif') // Consistent font
+                .style('font-size', '1em');
+        });
+    } else {
+        d3.select('#familyActivities')
+            .append('p')
+            .style('color', '#bdc3c7') // Lighter color
+            .text('Không có hoạt động gia đình.');
+    }
 
-  // Show modal
-  d3.select('#imageModal').style('display', 'block');
+    // Show modal
+    d3.select('#imageModal').style('display', 'block');
 }
 
 // Biến toàn cục cho slideIndex
 let slideIndex = 1;
 
-// Hàm thay đổi slide
+// Hàm thay đổi slide cho parent slideshow
 function plusSlides(n) {
-  showSlides(slideIndex += n);
+    showSlides(slideIndex += n);
 }
 
-// Hàm hiển thị slide
+// Hàm hiển thị slide cho parent slideshow
 function showSlides(n) {
-  const slides = document.getElementsByClassName('mySlides');
-  if (slides.length === 0) return; // Nếu không có slide nào, thoát
+    const slides = document.getElementsByClassName('mySlides');
+    if (slides.length === 0) return; // Nếu không có slide nào, thoát
 
-  if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}
+    if (n > slides.length) { slideIndex = 1 }
+    if (n < 1) { slideIndex = slides.length }
 
-  // Ẩn tất cả các slide
-  for (let i = 0; i < slides.length; i++) {
-      slides[i].style.display = 'none';
-  }
+    // Ẩn tất cả các slide
+    for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = 'none';
+    }
 
-  // Hiển thị slide hiện tại
-  slides[slideIndex - 1].style.display = 'block';
+    // Hiển thị slide hiện tại
+    slides[slideIndex - 1].style.display = 'block';
 
-  // Cập nhật chỉ báo số trang
-  document.getElementById('slideIndicator').innerText = `${slideIndex} / ${slides.length}`;
+    // Cập nhật chỉ báo số trang
+    document.getElementById('slideIndicator').innerText = `${slideIndex} / ${slides.length}`;
+}
+
+// Hàm hiển thị slide cho activity slideshow
+function showActivitySlides(n, activityDiv) {
+    if (!activityDiv.slideIndex) activityDiv.slideIndex = 1;
+    const slides = activityDiv.getElementsByClassName('activity-image-slide');
+    if (slides.length === 0) return;
+
+    activityDiv.slideIndex += n;
+
+    if (activityDiv.slideIndex > slides.length) { activityDiv.slideIndex = 1 }
+    if (activityDiv.slideIndex < 1) { activityDiv.slideIndex = slides.length }
+
+    // Ẩn tất cả các slide
+    for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = 'none';
+    }
+
+    // Hiển thị slide hiện tại
+    slides[activityDiv.slideIndex - 1].style.display = 'block';
+
+    // Cập nhật chỉ báo số trang
+    const indicator = activityDiv.getElementsByClassName('slideIndicator')[0];
+    if (indicator) {
+        indicator.innerText = `${activityDiv.slideIndex} / ${slides.length}`;
+    }
 }
 
 // Hiển thị thông tin khi hover
 function showInfo(d, element) {
-  const infoText = d3.select(element).select('.info-text');
-  infoText.text(`${d.data.name}${d.data.spouse ? ' & ' + d.data.spouse : ''}`)
-          .style('display', 'block');
+    const infoText = d3.select(element).select('.info-text');
+    infoText.text(`${d.data.name}${d.data.spouse ? ' & ' + d.data.spouse : ''}`)
+        .style('display', 'block');
 }
 
 // Ẩn thông tin khi rời chuột
 function hideInfo(d, element) {
-  const infoText = d3.select(element).select('.info-text');
-  infoText.style('display', 'none');
+    const infoText = d3.select(element).select('.info-text');
+    infoText.style('display', 'none');
 }
 
 // Sự kiện đóng modal
 d3.select('#closeModal').on('click touchstart', function() { // Thêm touchstart
-  d3.select('#imageModal').style('display', 'none');
+    d3.select('#imageModal').style('display', 'none');
+    // Hiển thị lại các nút zoom
+    d3.select('#zoomControls').style('display', 'flex');
 });
 
+// Đóng modal khi nhấp ra ngoài nội dung
 d3.select('#imageModal').on('click touchstart', function(event) { // Thêm touchstart
-  if (event.target.id === 'imageModal') {
-      d3.select('#imageModal').style('display', 'none');
-  }
+    if (event.target.id === 'imageModal') {
+        d3.select('#imageModal').style('display', 'none');
+        // Hiển thị lại các nút zoom
+        d3.select('#zoomControls').style('display', 'flex');
+    }
 });
 
 // Sự kiện nút zoom
 d3.select('#zoomIn').on('click touchstart', () => {
-  svg.transition().call(zoom.scaleBy, 1.2);
+    svg.transition().call(zoom.scaleBy, 1.2);
 });
 
 d3.select('#zoomOut').on('click touchstart', () => {
-  svg.transition().call(zoom.scaleBy, 0.8);
+    svg.transition().call(zoom.scaleBy, 0.8);
 });
 
 d3.select('#resetZoom').on('click touchstart', () => {
-  svg.transition().call(zoom.scaleTo, 1);
-  svg.transition().call(zoom.translateTo, width / 2, height / 2);
-  resetTree(); // Gọi hàm resetTree để đặt lại trạng thái cây
+    svg.transition().call(zoom.scaleTo, 1);
+    svg.transition().call(zoom.translateTo, width / 2, height / 2);
+    resetTree(); // Gọi hàm resetTree để đặt lại trạng thái cây
+});
+
+// Hàm hiển thị modal ảnh full size
+function showFullImage(imgSrc) {
+    d3.select('#fullImage').attr('src', imgSrc);
+    d3.select('#fullImageModal').style('display', 'block');
+    // Ẩn các nút zoom
+    d3.select('#zoomControls').style('display', 'none');
+}
+
+// Sự kiện đóng modal ảnh full size
+d3.select('#closeFullImageModal').on('click touchstart', function() { // Thêm touchstart
+    d3.select('#fullImageModal').style('display', 'none');
+    // Hiển thị lại các nút zoom
+    d3.select('#zoomControls').style('display', 'flex');
+});
+
+// Đóng modal ảnh full size khi nhấp ra ngoài ảnh
+d3.select('#fullImageModal').on('click touchstart', function(event) { // Thêm touchstart
+    if (event.target.id === 'fullImageModal') {
+        d3.select('#fullImageModal').style('display', 'none');
+        // Hiển thị lại các nút zoom
+        d3.select('#zoomControls').style('display', 'flex');
+    }
 });

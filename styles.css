@@ -1,8 +1,10 @@
 /* Định dạng chung cho trang web */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
+  background-color: #f4f4f9;
+  color: #333;
 }
 
 #container {
@@ -13,13 +15,21 @@ body {
 }
 
 h1 {
-  margin: 20px 0;
+  margin: 30px 0;
   text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5em;
+  color: #2c3e50;
 }
 
 #svgContainer {
-  width: 100%;
-  height: 600px;
+  width: 90%;
+  max-width: 1200px;
+  height: 700px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 #tree-svg {
@@ -27,36 +37,38 @@ h1 {
   height: 100%;
 }
 
+/* Các đường liên kết */
 .link {
   fill: none;
-  stroke: #ccc;
+  stroke: #bdc3c7;
   stroke-width: 2px;
 }
 
+/* Văn bản thông tin */
 .info-text {
-  font: 12px sans-serif;
-  fill: black;
+  font: 14px 'Roboto', sans-serif;
+  fill: #2c3e50;
 }
 
 /* CSS cho modal */
 #imageModal {
   display: none;
   position: fixed;
-  z-index: 9999;
+  z-index: 10000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(255, 255, 255, 0.95); /* Thay đổi màu nền sang trắng nhẹ */
   backdrop-filter: blur(5px);
 }
 
 #modalContent {
-  max-width: 800px;
-  margin: 50px auto;
-  background-color: #333;
-  padding: 20px;
+  max-width: 900px;
+  margin: 60px auto;
+  background-color: #ffffff; /* Màu nền trắng */
+  padding: 30px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -67,9 +79,10 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 800px) {
   #parentInfo {
       flex-direction: row;
       align-items: flex-start;
@@ -79,55 +92,77 @@ h1 {
 #slideshowContainer {
   position: relative;
   width: 100%;
-  max-width: 300px;
-  height: 400px;
-  margin: 0 auto;
+  max-width: 800px;
+  height: 500px;
+  margin: auto;
   overflow: hidden;
-  background-color: #333;
+  background-color: #f0f0f0; /* Thay đổi màu nền sang xám nhạt */
+  border-radius: 10px;
   flex: 1;
+}
+
+/* Images Wrapper */
+#slideshowImages {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 #modalInfo {
   flex: 1;
   margin-top: 20px;
   text-align: center;
-  color: #fff;
-  max-width: 500px;
+  color: #333333; /* Đổi màu chữ thành đen nhạt */
+  max-width: 600px;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 800px) {
   #modalInfo {
       margin-top: 0;
-      margin-left: 20px;
+      margin-left: 30px;
       text-align: left;
   }
 }
 
 #modalInfo h2 {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  font-size: 1.8em;
+  color: #2c3e50;
 }
 
 #modalInfo p {
   margin: 10px 0;
+  line-height: 1.6;
+  color: #555555; /* Đổi màu chữ cho dễ đọc */
 }
 
 #modalDescription {
   white-space: pre-wrap;
+  font-size: 1em;
+  color: #555555; /* Đồng nhất màu chữ */
 }
 
 /* Hide the images by default */
 .mySlides {
   display: none;
-  height: 100%;
-}
-
-/* Style cho hình ảnh trong slideshow */
-.mySlides img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: center;
+  position: absolute; 
+  top: 0;
+  left: 0;
+}
+
+.mySlides img {
+  width: 100%;
+  height: 100%; /* Đặt chiều cao tự động để giữ tỷ lệ */
+  object-fit: cover;
   border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.mySlides img:hover {
+  transform: scale(1.05);
 }
 
 /* Nút chuyển ảnh */
@@ -136,119 +171,125 @@ h1 {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  padding: 15px 20px;
-  color: white;
+  padding: 12px;
+  color: #2c3e50; /* Đổi màu icon */
   font-size: 24px;
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(255,255,255,0.7); /* Thay đổi màu nền nút */
   border: none;
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
 }
 
 .prev:hover, .next:hover {
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(255,255,255,0.9);
 }
 
 .prev {
-  left: 10px;
+  left: 15px;
 }
 
 .next {
-  right: 10px;
-}
-
-.prev i, .next i, .prev span, .next span {
-  pointer-events: none;
-}
-
-.prev span, .next span {
-  font-size: 18px;
+  right: 15px;
 }
 
 /* Chỉ báo số trang */
 #slideIndicator {
   position: absolute;
-  bottom: 10px;
+  bottom: 15px;
   right: 50%;
   transform: translateX(50%);
-  color: white;
+  color: #2c3e50; /* Đổi màu chữ */
   font-size: 16px;
-  background-color: rgba(0,0,0,0.6);
-  padding: 5px 10px;
+  background-color: rgba(255,255,255,0.7); /* Thay đổi màu nền */
+  padding: 5px 12px;
   border-radius: 20px;
 }
 
 /* CSS cho phần con cái */
 #childrenSection {
-  margin-top: 20px;
+  margin-top: 25px;
+  width: 100%;
 }
 
 #childrenSection h3 {
-  color: #fff;
+  color: #2c3e50; /* Đổi màu chữ */
   text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.5em;
 }
 
 #childrenImages {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 15px;
   justify-content: center;
 }
 
 .child-image {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
+  transition: transform 0.3s ease;
+  border: 2px solid rgb(255, 255, 255); /* Đổi màu viền */
+}
+
+.child-image:hover {
+  transform: scale(1.1);
 }
 
 /* Nút đóng modal */
 #closeModal {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  color: #fff;
+  top: 25px;
+  right: 35px;
+  color: #2c3e50; /* Đổi màu nút đóng */
   font-size: 40px;
   font-weight: bold;
   cursor: pointer;
+  transition: color 0.3s ease;
 }
 
 #closeModal:hover {
-  color: #bbb;
+  color: #555555;
 }
 
 /* CSS cho nút zoom */
 #zoomControls {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 30px;
+  right: 30px;
   display: flex;
   flex-direction: column;
   z-index: 10000;
 }
 
 #zoomControls button {
-  display: block;
-  margin-bottom: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4CAF50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  padding: 12px;
+  font-size: 20px;
+  background-color: #3498db;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 50%;
   cursor: pointer;
+  width: 50px;
+  height: 50px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 #zoomControls button:hover {
-  background-color: #45a049;
+  background-color: #2980b9;
+  transform: scale(1.1);
 }
 
 #zoomControls button:active {
-  background-color: #3e8e41;
+  background-color: #1c5980;
+  transform: scale(0.95);
 }
 
 /* CSS cho nút mở rộng/thu gọn */
@@ -258,25 +299,26 @@ h1 {
 
 .node-button-text {
   pointer-events: none;
-}
-
-button.prev, button.next {
-  background: none; /* Không có nền */
-  border: none; /* Không có đường viền */
-  cursor: pointer; /* Con trỏ chuột */
-  padding: 10px;
-  font-size: 24px; /* Tăng kích thước icon */
-  color: #555; /* Màu của icon */
+  font-size: 14px;
+  fill: #fff;
+  font-weight: bold;
 }
 
 /* CSS cho phần familyActivities */
 #familyActivities {
-  margin-top: 20px;
+  margin-top: 30px;
   width: 100%;
 }
 
+#familyActivities h3 {
+  color: #2c3e50; /* Đổi màu chữ */
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+}
+
 #familyActivities .activity {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 #familyActivities iframe, 
@@ -284,14 +326,29 @@ button.prev, button.next {
 #familyActivities img {
   max-width: 100%;
   border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  background-color: #ffffff; /* Thêm nền sáng cho video */
+}
+
+#familyActivities iframe:hover, 
+#familyActivities video:hover, 
+#familyActivities img:hover {
+  transform: scale(1.02);
+}
+
+#familyActivities p {
+  font-size: 1em;
+  color: #2c3e50; /* Đồng nhất màu chữ */
+  margin-top: 8px;
 }
 
 /* Responsive Styles */
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   #modalContent {
-      width: 90%;
-      margin: 20px auto;
-      padding: 10px;
+      width: 95%;
+      margin: 30px auto;
+      padding: 20px;
   }
   
   #slideshowContainer {
@@ -302,27 +359,30 @@ button.prev, button.next {
   #modalInfo {
       max-width: 100%;
       margin-left: 0;
+      text-align: center;
   }
   
   .child-image {
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
   }
   
   #zoomControls button {
-      padding: 8px 16px;
-      font-size: 14px;
+      padding: 10px;
+      font-size: 18px;
+      width: 45px;
+      height: 45px;
   }
   
   .prev, .next {
-      padding: 10px 15px;
+      padding: 10px;
       font-size: 20px;
   }
   
   #closeModal {
-      font-size: 30px;
-      top: 10px;
-      right: 10px;
+      font-size: 35px;
+      top: 15px;
+      right: 20px;
   }
   
   /* Đảm bảo iframe và video không vượt quá kích thước màn hình */
@@ -337,7 +397,7 @@ button.prev, button.next {
   }
 
   #modalInfo h2 {
-      font-size: 1.5em;
+      font-size: 1.6em;
   }
 
   #modalInfo p {
@@ -381,4 +441,41 @@ button.prev, button.next {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+/* CSS cho modal ảnh full size */
+#fullImageModal {
+  display: none;
+  position: fixed;
+  z-index: 11000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(255,255,255,0.95); /* Thay đổi màu nền sang trắng nhẹ */
+}
+
+#fullImageModal img {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+#closeFullImageModal {
+  position: absolute;
+  top: 30px;
+  right: 50px;
+  color: #2c3e50; /* Đổi màu nút đóng */
+  font-size: 45px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+#closeFullImageModal:hover {
+  color: #555555;
 }
